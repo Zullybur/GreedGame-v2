@@ -3,8 +3,7 @@ module Greed
     include Comparable
 
     attr_accessor :score
-    attr_reader :number
-    attr_reader :name
+    attr_reader :number, :name
 
     @@count = 0
 
