@@ -1,5 +1,6 @@
 require 'lib/greed/turn'
 require 'test/unit'
+require 'pry'
 
 module Greed
   class TurnTest < Test::Unit::TestCase
@@ -32,5 +33,21 @@ module Greed
       turn.send(:update_total_score)
       assert_equal 0, turn.total_score
     end
+
+    def test_live_dice_reset_to_five_when_no_dice_remain
+      turn = Turn.new
+      turn.roll
+      # Force roll_score to return an empty array
+      roll = turn.instance_eval('@roll_result')
+      roll_score = roll.instance_eval('@roll_score')
+      roll_score.instance_eval('@non_scoring_dice = []')
+      # Force update live_dice
+      turn.send(:update_live_dice)
+      assert_equal 5, turn.live_dice.size
+      turn.live_dice.each do |die|
+        assert_equal Die, die.class
+      end
+    end
+
   end
 end
