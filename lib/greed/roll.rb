@@ -1,4 +1,3 @@
-require 'greed/die'
 require 'greed/roll_score'
 
 module Greed
