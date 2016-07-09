@@ -1,40 +1,48 @@
 require 'greed/roll'
 require 'greed/die'
+require 'pry'
 
 module Greed
   class Turn
-    attr_reader :dice, :live_dice, :total_score, :roll_score
-
-    def initialize
-      @live_dice = Array.new(5) { Die.new }
-      @total_score = 0
+    # A turn is busted when any roll scores zero points
+    class TurnBustError < RuntimeError
     end
 
-    def roll
-      @roll_result = Roll.new(@live_dice)
-      @dice = @roll_result.dice
-      @roll_score = @roll_result.score
-      update_live_dice
-      update_total_score
+    def initialize
+      @rolls = []
+    end
+
+    def roll!
+      Roll.new(live_dice).tap do |roll| 
+        rolls.push roll 
+        raise TurnBustError unless roll.score > 0
+      end
+    end
+
+    def dice
+      roll_result&.dice || new_dice
+    end
+
+    # Get live dice from roll, if no live dice remain then
+    # create five new dice for the player to roll.
+    def live_dice
+      result = roll_result&.live_dice || new_dice
+      result.size > 0 ? result : new_dice
+    end
+
+    def total_score
+      rolls.map(&:score).reduce(0, &:+)
     end
 
     private
-    # Get live dice from roll, if no live dice remain then
-    # create five new dice for the player to roll.
-    def update_live_dice
-      @live_dice = if @roll_result.live_dice.size > 0
-                     @roll_result.live_dice
-                   else
-                     Array.new(5) { Die.new }
-                   end
+    attr_reader :rolls
+
+    def roll_result
+      rolls.last
     end
 
-    def update_total_score
-      @total_score = if @roll_score > 0
-                       @total_score + @roll_score
-                     else
-                       0
-                     end
+    def new_dice
+      Array.new(5) { Die.new }
     end
   end
 end
