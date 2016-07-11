@@ -61,7 +61,7 @@ module Greed
         puts "Roll Score: #{roll.score}"
         puts "Accumulated Score: #{turn.total_score}"
         puts DecorativeLine
-        puts "You have #{turn.live_dice.size} live dice (#{turn.live_dice.map { |die| die.value } }). Would you like to roll again?"
+        puts "You have #{turn.live_dice.size} live dice. Would you like to roll again?"
         puts DecorativeLine
         puts "(R)oll ~~ (E)nd Turn ~~ (G)ame State"
         input = get_char_input.upcase
