@@ -16,14 +16,11 @@ module Greed
       assert_equal 0, roll_score.value
     end
 
-    def test_live_dice_reset_to_five_when_all_dice_score
+    def test_empty_list_returned_when_all_die_score
       dice = [Die.new]
-      dice[0].instance_eval('@value = 5')
+      dice[0].instance_eval('@value = 1')
       roll_score = RollScore.new(dice)
-      assert_equal 5, roll_score.non_scoring_dice.size
-      roll_score.non_scoring_dice.each do |die|
-        assert_equal Die, die.class
-      end
+      assert [].eql?(roll_score.non_scoring_dice)
     end
 
     def test_score_of_a_single_roll_of_5_is_50
