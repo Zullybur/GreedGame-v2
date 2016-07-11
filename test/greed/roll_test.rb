@@ -1,6 +1,7 @@
 require 'lib/greed/roll.rb'
 require 'lib/greed/die.rb'
 require 'test/unit'
+require 'pry'
 
 module Greed
   class RollTest < Test::Unit::TestCase
@@ -8,6 +9,12 @@ module Greed
     def test_roll_can_be_created
       roll = Roll.new(Array.new(5) { Die.new })
       assert_not_nil roll
+    end
+
+    def test_roll_throws_error_on_nill_parameter
+      assert_raise(ArgumentError) do
+        Roll.new(nil)
+      end
     end
 
     def test_roll_has_attributes

@@ -11,21 +11,6 @@ module Greed
       end
     end
 
-    def test_dice_to_hash_returns_hash
-      roll_score = RollScore.new(Array.new(5) { Die.new })
-      assert_equal Hash, roll_score.send(:dice_to_hash).class
-    end
-
-    def test_to_hash_returns_arrays_of_dice_as_values
-      roll_score = RollScore.new(Array.new(5) { Die.new })
-      roll_score.send(:dice_to_hash).each do |key, array_of_dice|
-        assert_equal Array, array_of_dice.class
-        array_of_dice.each do |die|
-          assert_equal Die, die.class
-        end
-      end
-    end
-
     def test_score_of_an_empty_list_is_zero
       roll_score = RollScore.new([])
       assert_equal 0, roll_score.value
@@ -80,7 +65,7 @@ module Greed
       dice[3].instance_eval('@value = 6')
       roll_score = RollScore.new(dice)
       assert_equal 4, roll_score.non_scoring_dice.size
-      assert dice.eql?(roll_score.non_scoring_dice)
+      assert (dice.map { |die| die.value }).eql?(roll_score.non_scoring_dice.map { |die| die.value })
     end
 
     def test_score_of_a_triple_1_is_1000
