@@ -6,53 +6,36 @@ module Greed
     class NoPlayersError < RuntimeError
     end
 
-    attr_accessor :num_players, :active_players 
-    attr_reader :final_player_states, :current_player, :turn, :roll
+    attr_reader :current_player, :players
 
-    def initialize
-      @active_players = []
-      @final_player_states = []
+    def initialize(players)
+      # Ensure we can use what we were given
+      raise ArgumentError unless players.is_a?(Array) && players.count > 0 && players.all? { |p| p.is_a?(Player) }
+
+      @players = players
+      @active_players = Array.new(players)
     end
 
-    def next_player!
-      @current_player = active_players.pop
+    def next_turn!
+      @active_players.push(current_player) unless final_round? || current_player.nil?
+      @current_player = active_players.shift
+
       raise NoPlayersError if current_player.nil?
-      @turn = Turn.new
+      @current_turn = Turn.new
     end
 
-    def play_turn!
-      begin
-        @roll = turn.roll!
-        "get roll decision"
-      rescue Turn::TurnBustError
-        "busted turn"
-      end
+    def end_turn!
+      raise RuntimeError, "There is no active turn" if current_turn.nil?
+      current_player.score += current_turn.total_score if current_player.score > 0 || current_turn.total_score >= 300
+      # Return current turn but prevent ending the same turn repeatedly
+      current_turn.tap { @current_turn = nil }
     end
 
-    def end_turn!(update_score=true)
-      update_player_score if update_score
-      if current_player.score >= 3000
-        final_player_states.push(current_player)
-        "trigger final round"
-      else
-        make_current_player_active
-        "start new turn"
-      end
-    end
-
-    def end_final_turn!(update_score=true)
-      update_player_score if update_score
-      final_player_states.push(current_player)
-      "start new turn"
+    def final_round?
+      players.any? { |player| player.score >= 3000 }
     end
 
     private
-    def make_current_player_active
-      active_players.unshift(current_player)
-    end
-
-    def update_player_score
-      current_player.score += turn.total_score if current_player.score > 0 || turn.total_score >= 300
-    end
+    attr_reader :active_players, :current_turn
   end
 end
