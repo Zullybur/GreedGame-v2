@@ -9,10 +9,6 @@ module Greed
       assert_not_nil Turn.new
     end
 
-    def test_roll_returns_a_roll
-      assert_equal Roll, Turn.new.roll!.class
-    end
-
     def test_turn_has_attributes
       turn = Turn.new
       assert_not_nil turn.dice
@@ -25,6 +21,17 @@ module Greed
       assert_equal 0, turn.total_score
     end
 
+    def test_roll_returns_a_roll
+      loop do
+        begin
+          roll = Turn.new.roll!
+          assert_equal Roll, Turn.new.roll!.class
+          break
+        rescue Turn::TurnBustError
+        end
+      end
+    end
+
     def test_zero_roll_score_busts_turn
       # set up test
       turn = Turn.new
@@ -33,29 +40,46 @@ module Greed
       end
       assert_raise(Turn::TurnBustError) { turn.roll! }
     end
+
+    def test_dice_returns_five_new_dice_if_no_rolls
+      turn = Turn.new
+      assert_equal 5, turn.dice.size
+      assert turn.dice.all? { |die| die.value == nil }
+    end
+
+    def test_dice_returns_dice_from_last_roll
+      turn = Turn.new
+      loop do
+        begin
+          roll = turn.roll!
+          assert_equal roll.dice, turn.dice
+          break
+        rescue Turn::TurnBustError
+        end
+      end
+    end
         
     def test_no_live_dice_creates_five_new_dice
       turn = Turn.new
-      turn.roll!
       def turn.roll_result
         Roll.new([])
       end
       assert_equal 5, turn.live_dice.count
+      turn.live_dice.each { |die| assert_equal Die, die.class }
     end
 
-    def test_live_dice_reset_to_five_when_no_dice_remain
+    def test_total_score_returns_accumulated_score
       turn = Turn.new
-      turn.roll
-      # Force roll_score to return an empty array
-      roll = turn.instance_eval('@roll_result')
-      roll_score = roll.instance_eval('@roll_score')
-      roll_score.instance_eval('@non_scoring_dice = []')
-      # Force update live_dice
-      turn.send(:update_live_dice)
-      assert_equal 5, turn.live_dice.size
-      turn.live_dice.each do |die|
-        assert_equal Die, die.class
+      rolls = []
+      5.times do
+        begin
+          roll = turn.roll!
+          rolls.push roll
+        rescue Turn::TurnBustError
+          rolls.push(Roll.new([]))
+        end
       end
+      assert_equal rolls.map(&:score).reduce(0, &:+), turn.total_score
     end
   end
 end

@@ -20,10 +20,8 @@ module Greed
     def test_roll_has_attributes
       roll = Roll.new(Array.new(5) { Die.new })
       assert_not_nil roll.dice
-      assert roll.dice.size > 0
       assert_not_nil roll.score
       assert_not_nil roll.live_dice
-      assert roll.live_dice.size > 0
     end
 
     def test_subsequent_rolls_change_dice_values

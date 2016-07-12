@@ -8,3 +8,5 @@ printf "\n~~RollScore Tests~~\n"
 ruby -I . -I lib test/greed/roll_score_test.rb
 printf "\n~~Turn Tests~~\n"
 ruby -I . -I lib test/greed/turn_test.rb
+printf "\n~~Game Tests~~\n"
+ruby -I . -I lib test/greed/game_test.rb
