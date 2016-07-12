@@ -2,7 +2,7 @@ module Greed
   class RollScore
 
     def initialize(dice)
-      raise ArgumentError, "Valid dice array not provided" unless dice
+      raise ArgumentError, "Valid dice array not provided" unless dice.is_a?(Array) && dice.all? { |die| die.class == Die }
       @dice = dice
     end
 
