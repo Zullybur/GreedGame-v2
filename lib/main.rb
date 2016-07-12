@@ -1,5 +1,6 @@
-require 'greed/IO'
 require 'greed/game'
+require 'greed/player'
+require 'greed/IO'
 require 'pry'
 
 module Greed
