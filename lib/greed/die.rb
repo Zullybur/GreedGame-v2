@@ -10,7 +10,7 @@ module Greed
 
     # Roll the die and get the value
     def roll
-      @value = rand(1..@sides)
+      @value = rand(1..sides)
     end
   end
 end

@@ -10,7 +10,7 @@ module Greed
       assert_equal 6, die.sides
     end
 
-    def test_roll_returns_random_value
+    def test_die_roll_returns_random_value
       die = Die.new
       rolls = Hash.new{0}
       1000.times do
@@ -20,14 +20,12 @@ module Greed
     end
 
     def test_die_size_can_be_set
-      die = Die.new(20)
-      assert_equal 20, die.sides
-      rolls = Hash.new(0)
-      1000.times do
-        rolls[die.roll] += 1
-      end
-      assert_equal 20, rolls.size
-      assert_equal 20, rolls.keys.max
+      srand(1)
+      # Prep results based on test with given seed
+      expected_values = [6, 4, 5, 1, 2, 4, 6, 1, 1, 2]
+      srand(1)
+      dice_values = Array.new(10) { Die.new.roll }
+      assert expected_values.eql? dice_values
     end
   end
 end
