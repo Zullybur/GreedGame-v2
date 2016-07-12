@@ -1,1 +1,1 @@
-ruby -I lib lib/main.rb
+ruby -I lib lib/run.rb

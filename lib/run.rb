@@ -4,7 +4,7 @@ load 'greed/IO.rb'
 
 include Greed
 
-players = [Player.new("Matt"), Player.new("Clarke")]
+players = [Player.new("Player 1"), Player.new("Player 2")]
 
 game = Game.new(players)
 
