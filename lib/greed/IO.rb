@@ -5,7 +5,6 @@ module Greed
     class << self
       DecorativeLine =  "~~~~~~~~~~~~~~~~~"
 
-      #unused
       def display_main_menu
         loop do
           system('clear')
@@ -16,30 +15,25 @@ module Greed
         end
       end
 
-      #unused
       def display_rules
         system('clear')
         system('cat GREED_RULES.txt | more')
-        loop do
-          puts "#{DecorativeLine}\n(M)ain Menu"
-          break "main menu" if get_char_input.upcase == "M"
-        end
+        puts "#{DecorativeLine}\nPress ENTER to return to main menu"
+        gets
       end
 
-      #unused
       def display_get_num_players
         system('clear')
         puts "Please enter the number of players (between 1 and 9):"
         get_int_input(1,9)
       end
 
-      #unused
       def display_get_players(num)
         players = []
         (1..num).each do |player_num|
           puts "\nEnter the name for player ##{player_num}:"
           name = get_string_input(30)
-          players.unshift(Player.new(name))
+          players.push(Player.new(name))
         end
         players
       end

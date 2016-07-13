@@ -4,10 +4,17 @@ load 'greed/IO.rb'
 
 include Greed
 
-players = [Player.new("Player 1"), Player.new("Player 2")]
+# Main menu
+while true
+  input = Greed::IO::display_main_menu
+  break if input == "P"
+  Greed::IO::display_rules
+end
+
+num = Greed::IO::display_get_num_players
+players = Greed::IO::display_get_players(num)
 
 game = Game.new(players)
-
 
 begin
   # Game loop
